@@ -13,22 +13,20 @@ export function currentURL(pathname: string): URL {
   }
 }
 
-export function appURL() {
-  if (process.env.APP_URL) {
-    return process.env.APP_URL;
-  } else {
-    const url = process.env.APP_URL || vercelURL() || "http://localhost:3000";
-    console.warn(
-      `Warning (examples): APP_URL environment variable is not set. Falling back to ${url}.`
-    );
-    return url;
-  }
-}
+export function appURL(): string {
+  const customAppUrl = process.env.APP_URL;
+  const vercelUrl = process.env.VERCEL_URL;
 
-export function vercelURL() {
-  return process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : undefined;
+  if (customAppUrl) {
+    return customAppUrl.startsWith('http') ? customAppUrl : `https://${customAppUrl}`;
+  } else if (vercelUrl) {
+    return `https://${vercelUrl}`;
+  } else if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:3001';
+  } else {
+    console.warn('Unable to determine app URL, using fallback');
+    return 'https://fc-aniversary-v3.vercel.app';
+  }
 }
 
 export function formatNumber(num: number): string {

@@ -7,10 +7,12 @@ export async function generateMetadata({
   searchParams: { userfid?: string };
 }) {
   const framesUrl = new URL("/frames", appURL());
+  const fid = searchParams.userfid;
 
   if (searchParams.userfid) {
     framesUrl.searchParams.set("userfid", searchParams.userfid);
     framesUrl.searchParams.set("action", "fetch");
+
   }
 
   console.log("Fetching metadata from:", framesUrl.toString());
@@ -18,12 +20,12 @@ export async function generateMetadata({
   const castActionUrl = new URL("/api/cast-action", appURL());
 
   return {
-    title: "Moxie Stats Frame Demo",
-    description: "use this as a building block for frames.",
+    title: "Moxie Stats Frame",
+    description: "Check out my Moxie Stats!",
     openGraph: {
-      title: "MoxieDemo",
-      description: "use this as a building block for frames.",
-      images: [`${framesUrl.origin}/api/og`],
+      title: "Moxie Stats",
+      description: "Check out my Moxie Stats!",
+      images: [`${appURL()}/api/og`],
     },
     other: {
       ...(await fetchMetadata(framesUrl)),
@@ -33,5 +35,5 @@ export async function generateMetadata({
 }
 
 export default function Page() {
-  return <span>Loading Moxie Demo...</span>;
+  return <span></span>;
 }

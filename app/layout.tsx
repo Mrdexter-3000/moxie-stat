@@ -2,11 +2,18 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
+
+
 const inter = Inter({ subsets: ["latin"] });
 
+
 export const metadata: Metadata = {
-  title: "Moxie Stats Demo Frame",
-  description: "Use this frame to create more moxie frames",
+  metadataBase: new URL(process.env.APP_URL || 'http://localhost:3000'),
+  title: "Moxie Stats Frame",
+  description: "Check out my Moxie Stats!",
+  openGraph: {
+    images: [`${process.env.NEXT_PUBLIC_APP_URL}/api/og`],
+  },
 };
 
 export default function RootLayout({

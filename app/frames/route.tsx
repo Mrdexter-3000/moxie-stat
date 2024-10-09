@@ -1,6 +1,9 @@
 import { Button } from "frames.js/next";
+import React from "react";
 import { frames } from "./frames";
 import { appURL, formatNumber } from "../utils";
+import { text } from "stream/consumers";
+
 
 interface State {
   lastFid?: string;
@@ -10,6 +13,12 @@ interface MoxieData {
   today: { allEarningsAmount: string };
   weekly: { allEarningsAmount: string };
   lifetime: { allEarningsAmount: string };
+}
+
+interface EngagementData {
+  like: string;
+  reply: string;
+  recast: string;
 }
 
 const frameHandler = frames(async (ctx) => {
@@ -25,6 +34,7 @@ const frameHandler = frames(async (ctx) => {
 
   let userData: UserData | null = null;
   let moxieData: MoxieData | null = null;
+  
 
   let error: string | null = null;
   let isLoading = false;
@@ -127,132 +137,46 @@ const frameHandler = frames(async (ctx) => {
     await Promise.all([fetchUserData(fid), fetchMoxieData(fid)]);
   }
 
-  const SplashScreen = () => (
-    <div tw="flex flex-col w-full h-full bg-pink-50 text-blue-800 font-sans">
-      <div tw="flex items-center flex-grow">
-        <div tw="flex flex-col items-center flex-grow rounded-lg border-2 border-blue-800 mx-24 py-8 bg-pink-50">
-          <div tw="flex mb-6">
-            <img
-              src="https://storage.googleapis.com/papyrus_images/8ba13bd0410a9b2333784927e7c638ca"
-              tw="h-12"
-            />
-            <div tw="flex text-4xl  pl-2 text-blue-800">airstack</div>
-          </div>
-          <div tw="flex text-4xl  mb-6">Far Score</div>
-          <div tw="flex text-6xl  p-2 mb-6 text-center">--</div>
-          <div tw="flex text-4xl p-2 rounded">Rank: --</div>
-        </div>
-      </div>
-      <div tw="flex justify-between bg-blue-800 text-white mb-4 w-full px-4 py-1 text-center absolute top-50 p-10 bg-opacity-80">
-        <div tw="flex flex-col items-center w-full">
-          <span tw="flex text-6xl  mb-4">Moxie Demo Frame</span>
-          <span tw="flex text-4xl ">
-            Use this to build your Moxie Stats Frame.
-          </span>
-        </div>
-      </div>
-    </div>
-  );
+
+
+  const SplashScreen = () => ({
+    image: "https://uqmhcw5knmkdj4wh.public.blob.vercel-storage.com/splash-Rdu7ATWoRkov7e7eYcpKORd5vuyCTD.gif",
+  });
 
   const ScoreScreen = () => {
-    return (
-      <div tw="flex flex-col w-full h-full bg-pink-50 text-blue-800 font-sans">
-        <div tw="flex items-center px-8 pt-4 bg-pink-50 justify-between mr-4">
-          <div tw="flex items-center">
-            <img
-              src={userData?.profileImageUrl}
-              alt="Profile"
-              tw="w-20 h-20 rounded-full mr-4"
-            />
-            <div tw="flex flex-col">
-              <span tw="flex text-4xl">{userData?.profileDisplayName}</span>
-              <span tw="flex text-2xl">@{userData?.username}</span>
-            </div>
-          </div>
-        </div>
-        <div tw="flex justify-between px-8 align-center items-center">
-          <div tw="flex flex-col items-center w-1/3">
-            <div tw="flex flex-col items-center rounded-lg border-2 border-blue-800 py-8 bg-pink-50 bg-opacity-90 w-full">
-              <div tw="flex mb-6">
-                <img
-                  src="https://storage.googleapis.com/papyrus_images/8ba13bd0410a9b2333784927e7c638ca"
-                  tw="h-12"
-                />
-                <div tw="flex text-4xl pl-2 text-blue-800">airstack</div>
-              </div>
-              <div tw="flex text-4xl mb-6">Far Score</div>
-              <div tw="flex text-6xl mb-6">{userData?.socialCapitalScore}</div>
-              <div tw="flex text-4xl">Rank: {userData?.socialCapitalRank}</div>
-            </div>
-          </div>
+    console.log("Rendering ScoreScreen");
+    console.log("userData:", userData);
+    console.log("moxieData:", moxieData);
 
-          <div tw="flex flex-col border-2 border-blue-800 p-4">
-            <div tw="text-3xl font-bold mb-4 text-center">Engagement Value</div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 mb-4 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Like</span>
-              <div tw="flex text-4xl">{userData?.socialCapitalScore}</div>
-            </div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 mb-4 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Reply</span>
-              <div tw="flex text-4xl">
-                {(Number(userData?.socialCapitalScore) * 3).toFixed(2)}
-              </div>
-            </div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Recast/Quote</span>
-              <div tw="flex text-4xl">
-                {(Number(userData?.socialCapitalScore) * 6).toFixed(2)}
-              </div>
-            </div>
-          </div>
-          <div tw="flex flex-col border-2 border-blue-800 p-4">
-            <div tw="text-3xl font-bold mb-4 text-center">Moxie Earnings</div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 mb-4 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Today</span>
-              <span tw="text-4xl">
-                {formatNumber(
-                  parseFloat(moxieData?.today.allEarningsAmount || "0")
-                )}
-              </span>
-            </div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 mb-4 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Weekly</span>
-              <span tw="text-4xl">
-                {formatNumber(
-                  parseFloat(moxieData?.weekly.allEarningsAmount || "0")
-                )}
-              </span>
-            </div>
-            <div tw="flex flex-col items-center justify-center rounded-lg border-2 py-2 bg-pink-50 bg-opacity-90">
-              <span tw="text-2xl">Lifetime</span>
-              <span tw="text-4xl">
-                {formatNumber(
-                  parseFloat(moxieData?.lifetime.allEarningsAmount || "0")
-                )}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div tw="flex justify-between bg-blue-800 text-white w-full px-4 py-1 mt-4">
-          <div tw="flex text-2xl ">Moxie Stats Demo Frame</div>
+    const ogImageUrl = `${appURL()}/api/og?` + new URLSearchParams({
+      name: userData?.profileDisplayName || 'Unknown',
+      username: userData?.username || 'unknown',
+      score: userData?.socialCapitalScore || 'N/A',
+      rank: userData?.socialCapitalRank?.toString() || 'N/A',
+      like: userData?.socialCapitalScore || 'N/A',
+      reply: (Number(userData?.socialCapitalScore) * 3).toFixed(2),
+      recast: (Number(userData?.socialCapitalScore) * 6).toFixed(2),
+      today: formatNumber(parseFloat(moxieData?.today.allEarningsAmount || '0')),
+      weekly: formatNumber(parseFloat(moxieData?.weekly.allEarningsAmount || '0')),
+      lifetime: formatNumber(parseFloat(moxieData?.lifetime.allEarningsAmount || '0')),
+      profileImageUrl: encodeURIComponent(userData?.profileImageUrl || ''),
+      cache: Date.now().toString(),
+    }).toString();
 
-          <div tw="flex text-2xl">by @zeni.eth</div>
-        </div>
-      </div>
-    );
+    console.log("OG Image URL:", ogImageUrl);
+
+    return {
+      image: ogImageUrl,
+    };
   };
+
   const shareText = encodeURIComponent(
-    userData
-      ? `My Airstack Far Score is ${
-          (userData as UserData).socialCapitalScore
-        } with a rank of ${
-          (userData as UserData).socialCapitalRank
-        }! The higher the score, the more my reactions help you earn Moxie. Check out your score on moxiedemo, made by Zenigame (@zeni.eth)`
-      : "Check out your Moxie Far Score!"
+    `🔍 Curious about your Moxie? All stats revealed here! 
+    frame by @0xdexter Tip for awesomeness`
   );
 
   // Change the url here
-  const shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=https://moxiedemo.vercel.app/frames${
+  const shareUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=https://moxie-stat.vercel.app/frames${
     fid ? `?userfid=${fid}` : ""
   }`;
 
@@ -261,41 +185,32 @@ const frameHandler = frames(async (ctx) => {
   if (!userData) {
     buttons.push(
       <Button action="post" target={{ href: `${appURL()}?userfid=${fid}` }}>
-        View Me
+        My Stats
       </Button>,
       <Button
         action="link"
-        // Change the url here
-        target="https://warpcast.com/~/add-cast-action?url=https%3A%2F%2Fmoxiedemo.vercel.app%2Fapi%2Fcast-action"
+        
+        target="https://warpcast.com/~/add-cast-action?url=https%3A%2F%2Fmoxie-stat.vercel.app%2Fapi%2Fcast-action"
       >
         Cast Action
       </Button>,
-      <Button
-        action="link"
-        target="https://github.com/leeknowlton/farcaster-frame-airstack-moxie"
-      >
-        Frame Repo
-      </Button>
     );
   } else {
     buttons.push(
       <Button action="post" target={{ href: `${appURL()}?userfid=${fid}` }}>
-        View
+        Refresh
       </Button>,
       <Button action="link" target={shareUrl}>
         Share
       </Button>,
-      <Button
-        action="link"
-        target="https://github.com/leeknowlton/farcaster-frame-airstack-moxie"
-      >
-        Frame Repo
+      <Button action="link" target="https://warpcast.com/0xdexter/0xa911067c">
+        Tip here
       </Button>
     );
   }
 
   return {
-    image: fid && !error ? <ScoreScreen /> : <SplashScreen />,
+    ...(fid && !error ? ScoreScreen() : SplashScreen()),
     buttons: buttons,
   };
 });

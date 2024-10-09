@@ -1,14 +1,16 @@
 {
-  "name": "moxie-stats-demo-frame",
-  "version": "0.0.23",
+  "name": "moxie-stats-frame",
+  "version": "0.0.25",
   "private": true,
   "type": "module",
   "dependencies": {
-    "@airstack/node": "^0.0.7",
-    "frames.js": "^0.17.4",
-    "next": "^14.1.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@airstack/node": "latest",
+    "@vercel/og": "^0.6.3",
+    "frames.js": "latest",
+    "moralis": "^2.27.2",
+    "next": "^14.2.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@frames.js/debugger": "^0.3.5",
@@ -23,7 +25,7 @@
     "typescript": "^5.4.5"
   },
   "scripts": {
-    "dev": "node ./scripts/dev-script.js",
+    "dev": "next dev",
     "start": "next start",
     "build": "next build",
     "lint": "next lint"

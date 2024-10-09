@@ -9,10 +9,10 @@ export const GET = async (req: NextRequest) => {
     action: {
       type: "post",
     },
-    icon: "pulse",
-    name: "Moxie Demo Frame",
+    icon: "star",
+    name: "Real-Time Moxie Stats",
     aboutUrl: `${appURL()}`,
-    description: "Use this as a base to build moxie stats frames",
+    description: "Check your Moxie stats real-time",
   });
 };
 
